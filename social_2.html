@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NovaNet – Social Media v0.2</title>
+  <style>
+    :root {
+      --bg: #05060b;
+      --bg-alt: #0b0f1a;
+      --card: #0b0f1a;
+      --accent: #4f8cff;
+      --accent-soft: rgba(79, 140, 255, 0.25);
+      --text: #f5f7ff;
+      --muted: #8b92b3;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #15172b, #05060b);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: var(--bg-alt);
+      border-right: 1px solid var(--border);
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 0%, #ffffff, var(--accent) 40%, #05060b 80%);
+      box-shadow: 0 0 16px var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .nav-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--muted);
+      transition: 0.15s ease;
+    }
+
+    .nav-item span.icon { font-size: 16px; }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: rgba(79, 140, 255, 0.16);
+      color: var(--text);
+      box-shadow: 0 0 12px var(--accent-soft);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .sidebar-footer strong { color: var(--accent); }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5, 6, 11, 0.9);
+      backdrop-filter: blur(12px);
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .top-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .top-username {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      width: 260px;
+    }
+
+    .search input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .search span { color: var(--muted); }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff9f4a, #ff3b6b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 16px;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 12px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .stories {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .story {
+      width: 64px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .story-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ff9f4a, #ff3b6b);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .create-post {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .create-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .create-input {
+      flex: 1;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 8px 10px;
+      font-size: 13px;
+      color: var(--text);
+      resize: vertical;
+      min-height: 40px;
+      max-height: 120px;
+    }
+
+    .create-input::placeholder { color: var(--muted); }
+
+    .create-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .chip:hover {
+      border-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .btn-primary {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #05060b;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--accent-soft);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .feed {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .post {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .post-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #4f8cff, #7b5cff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .post-meta {
+      display: flex;
+      flex-direction: column;
+      font-size: 11px;
+    }
+
+    .post-author { font-weight: 600; }
+
+    .post-time { color: var(--muted); }
+
+    .post-body {
+      font-size: 13px;
+      margin: 4px 0 6px;
+    }
+
+    .post-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .post-tag {
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .post-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .post-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 3px 6px;
+      border-radius: 999px;
+      transition: 0.15s ease;
+    }
+
+    .post-btn:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    .post-btn span.icon { font-size: 13px; }
+
+    .post-stats {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .reaction-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 13px;
+    }
+
+    .reaction-chip {
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .reaction-chip:hover {
+      border-color: var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .mini-card-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .profile-box {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff9f4a, #ff3b6b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .profile-meta {
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .profile-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .profile-handle { color: var(--muted); }
+
+    .profile-edit {
+      font-size: 10px;
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .profile-bio {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .suggest-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .suggest-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .suggest-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .suggest-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff9f4a, #ff3b6b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .suggest-meta {
+      display: flex;
+      flex-direction: column;
+      font-size: 11px;
+    }
+
+    .suggest-handle { font-weight: 600; }
+
+    .suggest-tag { color: var(--muted); }
+
+    .follow-btn {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 11px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .follow-btn:hover {
+      border-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .activity-list {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .activity-item strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">N</div>
+      <div>
+        <div class="logo-text">NOVANET</div>
+        <div class="logo-sub">Brand new social universe</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="nav-section-title">Main</div>
+      <div class="nav-list">
+        <div class="nav-item active">
+          <span class="icon">🏠</span>
+          <span>Home Feed</span>
+        </div>
+        <div class="nav-item">
+          <span class="icon">🔥</span>
+          <span>Trending</span>
+        </div>
+        <div class="nav-item">
+          <span class="icon">👥</span>
+          <span>Circles</span>
+        </div>
+        <div class="nav-item">
+          <span class="icon">🔔</span>
+          <span>Notifications</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="nav-section-title">Create</div>
+      <div class="nav-list">
+        <div class="nav-item">
+          <span class="icon">✏️</span>
+          <span>New Post</span>
+        </div>
+        <div class="nav-item">
+          <span class="icon">📸</span>
+          <span>Story</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      NovaNet · v0.2 concept<br />
+      Built with <strong>HTML · CSS · JS</strong>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="top-left">
+        <div class="top-title">Home · NovaNet</div>
+        <div class="top-username" id="topUsername">@nova_user</div>
+      </div>
+      <div class="search">
+        <span>🔍</span>
+        <input placeholder="Search people, posts, or circles..." />
+      </div>
+      <div class="avatar" id="avatarBtn">D</div>
+    </div>
+
+    <div class="content">
+      <div class="column">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Stories</div>
+            <div class="pill">Tap to preview</div>
+          </div>
+          <div class="stories" id="stories"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Create post</div>
+            <div class="pill">Public</div>
+          </div>
+          <div class="create-post">
+            <div class="create-row">
+              <div class="avatar">D</div>
+              <textarea
+                id="postInput"
+                class="create-input"
+                placeholder="Share a thought, a win, or a brainrot moment..."
+              ></textarea>
+            </div>
+            <div class="create-actions">
+              <div class="chips">
+                <div class="chip">#update</div>
+                <div class="chip">#gaming</div>
+                <div class="chip">#brainrot</div>
+                <div class="chip">#irl</div>
+              </div>
+              <button id="postBtn" class="btn-primary" disabled>Post</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Feed</div>
+            <div class="pill" id="feedMeta">0 posts</div>
+          </div>
+          <div class="feed" id="feed"></div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="card">
+          <div class="mini-card-title">Profile</div>
+          <div class="profile-box">
+            <div class="profile-avatar">D</div>
+            <div class="profile-meta">
+              <div class="profile-name-row">
+                <span id="profileName">Nova User</span>
+                <span class="profile-edit" id="editProfile">edit</span>
+              </div>
+              <span class="profile-handle" id="profileHandle">@nova_user</span>
+              <div class="profile-bio" id="profileBio">
+                Building chaos, games, and stories in the NovaNet universe.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="mini-card-title">Suggested circles</div>
+          <div class="suggest-list" id="suggestions"></div>
+        </div>
+
+        <div class="card">
+          <div class="mini-card-title">Activity</div>
+          <div class="activity-list" id="activity"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const storiesEl = document.getElementById('stories');
+    const feedEl = document.getElementById('feed');
+    const feedMetaEl = document.getElementById('feedMeta');
+    const postInput = document.getElementById('postInput');
+    const postBtn = document.getElementById('postBtn');
+    const suggestionsEl = document.getElementById('suggestions');
+    const activityEl = document.getElementById('activity');
+    const profileNameEl = document.getElementById('profileName');
+    const profileHandleEl = document.getElementById('profileHandle');
+    const profileBioEl = document.getElementById('profileBio');
+    const editProfileBtn = document.getElementById('editProfile');
+    const topUsernameEl = document.getElementById('topUsername');
+
+    const stories = [
+      { initials: 'DS', name: 'Dev Squad', preview: 'Shipping features and breaking builds.' },
+      { initials: 'GX', name: 'Game X Hub', preview: 'Ranked grind and clutch moments.' },
+      { initials: 'BR', name: 'Brainrot Lab', preview: 'Pure meme energy, no filter.' },
+      { initials: 'IR', name: 'IRL Moments', preview: 'Sunsets, coffee, and chaos.' },
+      { initials: 'AN', name: 'Anime Core', preview: 'Legacy arcs and emotional damage.' }
+    ];
+
+    const suggestions = [
+      { initials: 'JD', handle: '@jdev', tag: 'Code & coffee' },
+      { initials: 'GG', handle: '@ggplays', tag: 'Gaming nights' },
+      { initials: 'AR', handle: '@arcwriter', tag: 'Story threads' },
+      { initials: 'BN', handle: '@brainnet', tag: 'Brainrot memes' }
+    ];
+
+    let posts = [
+      {
+        author: 'Nova System',
+        initials: 'N',
+        time: 'Just now',
+        body: 'Welcome to NovaNet — a brand new social space for your chaos, wins, and experiments
